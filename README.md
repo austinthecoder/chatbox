@@ -1,6 +1,6 @@
 # Chatbox
 
-TODO: Write a gem description
+Simple messaging system.
 
 ## Installation
 
