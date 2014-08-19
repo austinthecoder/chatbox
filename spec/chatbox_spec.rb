@@ -1,0 +1,2 @@
+describe Chatbox do
+end
