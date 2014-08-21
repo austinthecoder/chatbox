@@ -20,7 +20,22 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+```ruby
+Person = Struct.new :chatbox_id
+
+austin = Person.new 1
+rachel = Person.new 2
+
+Chatbox.deliver_message! from: austin, to: rachel, body: 'Hello! How are you?'
+
+rachels_inbox = Chatbox.fetch_inbox_for rachel
+message = rachels_inbox[0]
+message.body # 'Hello! How are you?'
+
+austins_outbox = Chatbox.fetch_outbox_for austin
+message = austins_outbox[0]
+message.body # 'Hello! How are you?'
+```
 
 ## Contributing
 
