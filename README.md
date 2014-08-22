@@ -1,5 +1,6 @@
 [![Build Status](https://travis-ci.org/austinthecoder/chatbox.svg?branch=master)](https://travis-ci.org/austinthecoder/chatbox)
 [![Code Climate](https://codeclimate.com/github/austinthecoder/chatbox/badges/gpa.svg)](https://codeclimate.com/github/austinthecoder/chatbox)
+[![Test Coverage](https://codeclimate.com/github/austinthecoder/chatbox/badges/coverage.svg)](https://codeclimate.com/github/austinthecoder/chatbox)
 
 # Chatbox
 
