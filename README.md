@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/austinthecoder/chatbox.svg?branch=master)](https://travis-ci.org/austinthecoder/chatbox)
+
 # Chatbox
 
 Simple messaging system.
