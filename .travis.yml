@@ -1,14 +1,7 @@
 language: ruby
 rvm:
   - "2.0.0"
-  - "2.1.2"
   - ruby-head
-  - jruby-1.7.12
-  - jruby-head
-  - rbx-2.0.0
-  - rbx-2.1.1
-  - rbx-2.2.6
-  - rbx-head
 script: bundle exec rspec
 before_install:
   - gem install bundler
