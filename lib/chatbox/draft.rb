@@ -1,6 +1,10 @@
+require 'chatbox/fake_missing_keywords'
+
 module Chatbox
   class Draft
-    def initialize(from:, to:, body:, store:)
+    include FakeMissingKeywords
+
+    def initialize(from: req(:from), to: req(:to), body: req(:body), store: req(:store))
       @from_id = from.chatbox_id
       @to_id = to.chatbox_id
       @body = body

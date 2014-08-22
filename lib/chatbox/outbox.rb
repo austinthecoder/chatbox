@@ -1,6 +1,10 @@
+require 'chatbox/fake_missing_keywords'
+
 module Chatbox
   class Outbox
-    def initialize(entity:, store:)
+    include FakeMissingKeywords
+
+    def initialize(entity:  req(:entity), store:  req(:store))
       @id = entity.chatbox_id
       @store = store
     end
