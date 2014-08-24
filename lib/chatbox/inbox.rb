@@ -1,4 +1,5 @@
 require 'chatbox/fake_missing_keywords'
+require 'chatbox/message'
 
 module Chatbox
   class Inbox
@@ -28,7 +29,10 @@ module Chatbox
     private
 
     def messages
-      @messages ||= store.find_all_messages_by_to_id id
+      @messages ||= begin
+        records = store.find_all_messages_by_to_id id
+        records.map { |record| Message.new record: record, store: store }
+      end
     end
   end
 end

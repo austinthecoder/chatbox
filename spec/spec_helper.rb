@@ -1,4 +1,10 @@
+require 'chatbox'
+
 RSpec.configure do |config|
+  config.before do
+    Chatbox.reset_config!
+  end
+
   # More verbose output when running an individual spec file.
   if config.files_to_run.one?
     # Use the documentation formatter for detailed output,
