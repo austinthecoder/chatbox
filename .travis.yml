@@ -7,3 +7,5 @@ before_install:
   - gem install bundler
 notifications:
   email: false
+services:
+  - memcached
