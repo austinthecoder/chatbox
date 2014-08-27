@@ -6,19 +6,21 @@ describe 'stores' do
   [:memcached, :memory].each do |store_type|
     context "using #{store_type} store" do
       before do
+        id = 0
+        id_generator = -> { id += 1 }
         @store = case store_type
         when :memcached
           client = Dalli::Client.new nil, namespace: 'chatbox-test'
           client.flush
-          Chatbox::MemcachedStore.new client
+          Chatbox::MemcachedStore.new client, id_generator: id_generator
         when :memory
-          Chatbox::MemoryStore.new
+          Chatbox::MemoryStore.new id_generator: id_generator
         end
 
         [
-          {'id' => 1, 'from_id' => 20, 'to_id' => 30, 'body' => 'Hi'},
-          {'id' => 2, 'from_id' => 20, 'to_id' => 31, 'body' => 'Hello'},
-          {'id' => 3, 'from_id' => 21, 'to_id' => 31, 'body' => 'Howdy'},
+          {from_id: 20, to_id: 30, body: 'Hi'},
+          {from_id: 20, to_id: 31, body: 'Hello'},
+          {from_id: 21, to_id: 31, body: 'Howdy'},
         ].each do |attrs|
           @store.add_message attrs
         end
