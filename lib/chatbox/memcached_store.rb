@@ -1,54 +1,52 @@
-require 'dalli'
 require 'json'
 
 module Chatbox
   class MemcachedStore
-    def initialize(namespace: nil)
-      @dalli = Dalli::Client.new nil, namespace: namespace
+    def initialize(client)
+      @client = client
     end
 
-    delegate :flush, to: :dalli
-
     def add_message(attrs)
-      @dalli.set "messages/#{attrs['id']}", JSON.generate(
+      client.set "messages/#{attrs['id']}", JSON.generate(
         'from_id' => attrs['from_id'],
         'to_id' => attrs['to_id'],
         'body' => attrs['body'],
+        'read' => false,
       )
 
-      from_list = JSON.parse(@dalli.get("from/#{attrs['from_id']}") || '[]')
+      from_list = JSON.parse(client.get("from/#{attrs['from_id']}") || '[]')
       from_list << {'from_id' => attrs['from_id'], 'message_id' => attrs['id']}
-      @dalli.set "from/#{attrs['from_id']}", JSON.generate(from_list)
+      client.set "from/#{attrs['from_id']}", JSON.generate(from_list)
 
-      to_list = JSON.parse(@dalli.get("to/#{attrs['to_id']}") || '[]')
+      to_list = JSON.parse(client.get("to/#{attrs['to_id']}") || '[]')
       to_list << {'to_id' => attrs['to_id'], 'message_id' => attrs['id']}
-      @dalli.set "to/#{attrs['to_id']}", JSON.generate(to_list)
+      client.set "to/#{attrs['to_id']}", JSON.generate(to_list)
     end
 
     ##########
 
     def mark_message_read!(id)
-      attrs = JSON.parse @dalli.get("messages/#{id}")
+      attrs = JSON.parse client.get("messages/#{id}")
       attrs['read'] = true
-      @dalli.set "messages/#{id}", JSON.generate(attrs)
+      client.set "messages/#{id}", JSON.generate(attrs)
     end
 
     def mark_message_unread!(id)
-      attrs = JSON.parse @dalli.get("messages/#{id}")
+      attrs = JSON.parse client.get("messages/#{id}")
       attrs['read'] = false
-      @dalli.set "messages/#{id}", JSON.generate(attrs)
+      client.set "messages/#{id}", JSON.generate(attrs)
     end
 
     ##########
 
     def find_message(id)
-      if json = @dalli.get("messages/#{id}")
+      if json = client.get("messages/#{id}")
         Record.new id, JSON.parse(json)
       end
     end
 
-    def find_all_messages_by_to_id(id)
-      if json = @dalli.get("to/#{id}")
+    def find_messages_by_to_id(id)
+      if json = client.get("to/#{id}")
         JSON.parse(json).map do |attrs|
           find_message attrs['message_id']
         end
@@ -57,8 +55,8 @@ module Chatbox
       end
     end
 
-    def find_all_messages_by_from_id(id)
-      if json = @dalli.get("from/#{id}")
+    def find_messages_by_from_id(id)
+      if json = client.get("from/#{id}")
         JSON.parse(json).map do |attrs|
           find_message attrs['message_id']
         end
@@ -69,7 +67,7 @@ module Chatbox
 
     private
 
-    attr_reader :dalli
+    attr_reader :client
 
     class Record
       def initialize(id, attrs)

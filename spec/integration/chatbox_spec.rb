@@ -1,3 +1,4 @@
+require 'dalli'
 require 'chatbox/memcached_store'
 
 describe 'chatbox' do
@@ -10,9 +11,9 @@ describe 'chatbox' do
     context "using #{store_type} store" do
       before do
         if store_type == :memcached
-          memcached_store = Chatbox::MemcachedStore.new namespace: 'chatbox-text'
-          memcached_store.flush
-          Chatbox.configure { |config| config.store = memcached_store }
+          client = Dalli::Client.new nil, namespace: 'chatbox-test'
+          client.flush
+          Chatbox.configure { |config| config.store = Chatbox::MemcachedStore.new client }
         end
       end
 

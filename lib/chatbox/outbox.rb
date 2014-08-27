@@ -30,7 +30,7 @@ module Chatbox
 
     def messages
       @messages ||= begin
-        records = store.find_all_messages_by_from_id(id)
+        records = store.find_messages_by_from_id(id)
         records.map { |record| Message.new record: record, store: store }
       end
     end

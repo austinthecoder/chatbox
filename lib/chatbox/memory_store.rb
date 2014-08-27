@@ -1,8 +1,10 @@
 module Chatbox
   class MemoryStore
     def add_message(attrs)
-      attrs_list << attrs
+      attrs_list << attrs.merge('read' => false)
     end
+
+    ##########
 
     def mark_message_read!(id)
       attrs_list.detect { |attrs| attrs['id'] == id }.merge! 'read' => true
@@ -20,11 +22,11 @@ module Chatbox
       end
     end
 
-    def find_all_messages_by_to_id(id)
+    def find_messages_by_to_id(id)
       attrs_list.select { |attrs| attrs['to_id'] == id }.map { |attrs| Record.new attrs }
     end
 
-    def find_all_messages_by_from_id(id)
+    def find_messages_by_from_id(id)
       attrs_list.select { |attrs| attrs['from_id'] == id }.map { |attrs| Record.new attrs }
     end
 
