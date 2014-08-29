@@ -6,6 +6,7 @@ describe 'stores' do
   [:memcached, :memory].each do |store_type|
     context "using #{store_type} store" do
       before do
+        Timecop.freeze
         id = 0
         id_generator = -> { id += 1 }
         @store = case store_type
@@ -32,12 +33,15 @@ describe 'stores' do
         ]
       end
 
+      after { Timecop.return }
+
       it 'finding messages by id' do
         [1, 2, 3].each_with_index do |id, index|
           message = @store.find_message id
           @values_list[index].each do |name, value|
             expect(message.public_send name).to eq value
           end
+          expect(message.sent_at).to eq Time.new.round(3)
         end
       end
 
@@ -82,10 +86,12 @@ describe 'stores' do
       end
 
       it 'changing message read_at' do
-        read_at = Time.new
-        @store.set_message_read_at! 1, read_at
-        message = @store.find_message 1
-        expect(message.read_at).to eq read_at.round(3)
+        read_at = Time.new + 10
+        Timecop.freeze read_at do
+          @store.set_message_read_at! 1
+          message = @store.find_message 1
+          expect(message.read_at).to eq read_at.round(3)
+        end
 
         @store.set_message_read_at! 1, nil
         message = @store.find_message 1

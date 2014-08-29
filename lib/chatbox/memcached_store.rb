@@ -16,7 +16,7 @@ module Chatbox
         from_id: attrs[:from_id],
         to_id: attrs[:to_id],
         body: attrs[:body],
-        read: false,
+        sent_at: Time.new.round(3).utc.iso8601(3),
       }
 
       from_list = read("from/#{attrs[:from_id]}") || []
@@ -94,7 +94,11 @@ module Chatbox
       end
 
       def read_at
-        Time.parse(attrs[:read_at]) if attrs[:read_at]
+        @read_at ||= Time.parse(attrs[:read_at]) if attrs[:read_at]
+      end
+
+      def sent_at
+        @sent_at ||= Time.parse attrs[:sent_at]
       end
 
       private

@@ -1,3 +1,4 @@
+require 'timecop'
 require 'chatbox'
 
 RSpec.configure do |config|

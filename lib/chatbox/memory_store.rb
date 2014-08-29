@@ -8,7 +8,7 @@ module Chatbox
     end
 
     def add_message(attrs)
-      attrs = attrs.merge id: id_generator.(), read_at: nil
+      attrs = attrs.merge id: id_generator.(), sent_at: Time.new.round(3).utc.iso8601(3)
       attrs_list << attrs
     end
 
@@ -55,7 +55,11 @@ module Chatbox
       end
 
       def read_at
-        Time.parse(attrs[:read_at]) if attrs[:read_at]
+        @read_at ||= Time.parse(attrs[:read_at]) if attrs[:read_at]
+      end
+
+      def sent_at
+        @sent_at ||= Time.parse attrs[:sent_at]
       end
 
       private
