@@ -4,7 +4,7 @@
 
 # Chatbox
 
-Simple messaging system.
+Messaging system.
 
 ## Installation
 
