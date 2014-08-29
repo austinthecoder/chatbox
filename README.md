@@ -32,11 +32,11 @@ rachel = Person.new 2
 
 Chatbox.deliver_message! from: austin, to: rachel, body: 'Hello! How are you?'
 
-rachels_inbox = Chatbox.fetch_inbox_for rachel
+rachels_inbox = Chatbox.fetch_inbox rachel
 message = rachels_inbox[0]
 message.body # 'Hello! How are you?'
 
-austins_outbox = Chatbox.fetch_outbox_for austin
+austins_outbox = Chatbox.fetch_outbox austin
 message = austins_outbox[0]
 message.body # 'Hello! How are you?'
 ```

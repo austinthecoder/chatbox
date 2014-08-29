@@ -23,11 +23,11 @@ module Chatbox
     Draft.new(args).deliver!
   end
 
-  def fetch_inbox_for(entity)
+  def fetch_inbox(entity)
     Inbox.new entity: entity, store: store
   end
 
-  def fetch_outbox_for(entity)
+  def fetch_outbox(entity)
     Outbox.new entity: entity, store: store
   end
 
