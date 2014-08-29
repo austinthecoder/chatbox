@@ -1,4 +1,5 @@
 require 'securerandom'
+require 'time'
 
 module Chatbox
   class MemoryStore
@@ -7,18 +8,15 @@ module Chatbox
     end
 
     def add_message(attrs)
-      attrs = attrs.merge id: id_generator.(), read: false
+      attrs = attrs.merge id: id_generator.(), read_at: nil
       attrs_list << attrs
     end
 
     ##########
 
-    def mark_message_read!(id)
-      attrs_list.detect { |attrs| attrs[:id] == id }.merge! read: true
-    end
-
-    def mark_message_unread!(id)
-      attrs_list.detect { |attrs| attrs[:id] == id }.merge! read: false
+    def set_message_read_at!(id, time = Time.now)
+      time = time.round(3).utc.iso8601(3) if time
+      attrs_list.detect { |attrs| attrs[:id] == id }.merge! read_at: time
     end
 
     ##########
@@ -50,10 +48,14 @@ module Chatbox
         @attrs = attrs
       end
 
-      %i[id from_id to_id body read].each do |name|
+      %i[id from_id to_id body].each do |name|
         define_method name do
           attrs[name]
         end
+      end
+
+      def read_at
+        Time.parse(attrs[:read_at]) if attrs[:read_at]
       end
 
       private

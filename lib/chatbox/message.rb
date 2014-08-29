@@ -12,16 +12,16 @@ module Chatbox
     delegate :id, :from_id, :to_id, :body, to: :record
 
     def read?
-      record.read
+      record.read_at
     end
 
     def mark_as_read!
-      store.mark_message_read! id
+      store.set_message_read_at! id
       @record = store.find_message id
     end
 
     def mark_as_unread!
-      store.mark_message_unread! id
+      store.set_message_read_at! id, nil
       @record = store.find_message id
     end
 

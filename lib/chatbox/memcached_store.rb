@@ -1,5 +1,6 @@
 require 'securerandom'
 require 'json'
+require 'time'
 
 module Chatbox
   class MemcachedStore
@@ -29,15 +30,10 @@ module Chatbox
 
     ##########
 
-    def mark_message_read!(id)
+    def set_message_read_at!(id, time = Time.now)
+      time = time.round(3).utc.iso8601(3) if time
       attrs = read "messages/#{id}"
-      attrs[:read] = true
-      write "messages/#{id}", attrs
-    end
-
-    def mark_message_unread!(id)
-      attrs = read "messages/#{id}"
-      attrs[:read] = false
+      attrs[:read_at] = time
       write "messages/#{id}", attrs
     end
 
@@ -91,10 +87,14 @@ module Chatbox
 
       attr_reader :id
 
-      %i[from_id to_id body read].each do |name|
+      %i[from_id to_id body].each do |name|
         define_method name do
           attrs[name]
         end
+      end
+
+      def read_at
+        Time.parse(attrs[:read_at]) if attrs[:read_at]
       end
 
       private

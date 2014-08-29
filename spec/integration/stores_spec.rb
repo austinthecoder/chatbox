@@ -26,9 +26,9 @@ describe 'stores' do
         end
 
         @values_list = [
-          {id: 1, from_id: 20, to_id: 30, body: 'Hi', read: false},
-          {id: 2, from_id: 20, to_id: 31, body: 'Hello', read: false},
-          {id: 3, from_id: 21, to_id: 31, body: 'Howdy', read: false},
+          {id: 1, from_id: 20, to_id: 30, body: 'Hi', read_at: nil},
+          {id: 2, from_id: 20, to_id: 31, body: 'Hello', read_at: nil},
+          {id: 3, from_id: 21, to_id: 31, body: 'Howdy', read_at: nil},
         ]
       end
 
@@ -81,14 +81,15 @@ describe 'stores' do
         end
       end
 
-      it 'marking messages as read/unread' do
-        @store.mark_message_read! 1
+      it 'changing message read_at' do
+        read_at = Time.new
+        @store.set_message_read_at! 1, read_at
         message = @store.find_message 1
-        expect(message.read).to eq true
+        expect(message.read_at).to eq read_at.round(3)
 
-        @store.mark_message_unread! 1
+        @store.set_message_read_at! 1, nil
         message = @store.find_message 1
-        expect(message.read).to eq false
+        expect(message.read_at).to be_nil
       end
     end
   end
