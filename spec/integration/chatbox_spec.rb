@@ -20,10 +20,10 @@ describe 'chatbox' do
       it 'sending a message' do
         Chatbox.deliver_message! from: @austin, to: @rachel, body: 'Hello! How are you?'
 
-        austins_outbox = Chatbox.fetch_outbox @austin
-        expect(austins_outbox.size).to eq 1
+        messages = Chatbox.find_messages_from @austin
+        expect(messages.size).to eq 1
 
-        message = austins_outbox[0]
+        message = messages[0]
         expect(message.to_id).to eq 2
         expect(message.body).to eq 'Hello! How are you?'
       end
@@ -31,10 +31,10 @@ describe 'chatbox' do
       it 'receiving a message' do
         Chatbox.deliver_message! from: @austin, to: @rachel, body: 'Hello! How are you?'
 
-        rachels_inbox = Chatbox.fetch_inbox @rachel
-        expect(rachels_inbox.size).to eq 1
+        messages = Chatbox.find_messages_to @rachel
+        expect(messages.size).to eq 1
 
-        message = rachels_inbox[0]
+        message = messages[0]
         expect(message.from_id).to eq 1
         expect(message.body).to eq 'Hello! How are you?'
       end
@@ -42,21 +42,21 @@ describe 'chatbox' do
       it 'marking messages as read/unread' do
         Chatbox.deliver_message! from: @austin, to: @rachel, body: 'Hello! How are you?'
 
-        message = Chatbox.fetch_inbox(@rachel)[0]
+        message = Chatbox.find_messages_to(@rachel)[0]
 
         expect(message).to_not be_read
 
         message.mark_as_read!
         expect(message).to be_read
 
-        message = Chatbox.fetch_inbox(@rachel)[0]
+        message = Chatbox.find_messages_to(@rachel)[0]
 
         expect(message).to be_read
 
         message.mark_as_unread!
         expect(message).to_not be_read
 
-        message = Chatbox.fetch_inbox(@rachel)[0]
+        message = Chatbox.find_messages_to(@rachel)[0]
 
         expect(message).to_not be_read
       end

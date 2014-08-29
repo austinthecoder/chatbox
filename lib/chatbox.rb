@@ -1,9 +1,8 @@
 require 'active_support/core_ext/object'
 require 'chatbox/configuration'
 require 'chatbox/draft'
-require 'chatbox/inbox'
 require 'chatbox/memory_store'
-require 'chatbox/outbox'
+require 'chatbox/message'
 require 'chatbox/version'
 
 module Chatbox
@@ -23,12 +22,14 @@ module Chatbox
     Draft.new(args).deliver!
   end
 
-  def fetch_inbox(entity)
-    Inbox.new entity: entity, store: store
+  def find_messages_from(sender)
+    records = store.find_messages_by_from_id sender.chatbox_id
+    records.map { |record| Message.new record: record, store: store }
   end
 
-  def fetch_outbox(entity)
-    Outbox.new entity: entity, store: store
+  def find_messages_to(recipient)
+    records = store.find_messages_by_to_id recipient.chatbox_id
+    records.map { |record| Message.new record: record, store: store }
   end
 
   private

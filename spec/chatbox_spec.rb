@@ -19,22 +19,4 @@ describe Chatbox do
       Chatbox.deliver_message! from: @from, to: @to, body: 'Hi'
     end
   end
-
-  describe '.fetch_inbox' do
-    it 'returns an inbox for the entity and configured store' do
-      store = double 'store'
-      Chatbox.configure { |config| config.store = store }
-      entity = double 'entity', chatbox_id: 1
-      expect(Chatbox.fetch_inbox(entity)).to eq Chatbox::Inbox.new(entity: entity, store: store)
-    end
-  end
-
-  describe '.fetch_outbox' do
-    it 'returns an outbox for the entity and configured store' do
-      store = double 'store'
-      Chatbox.configure { |config| config.store = store }
-      entity = double 'entity', chatbox_id: 1
-      expect(Chatbox.fetch_outbox(entity)).to eq Chatbox::Outbox.new(entity: entity, store: store)
-    end
-  end
 end
